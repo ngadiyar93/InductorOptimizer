@@ -23,7 +23,7 @@ function [evaluatedChrom] = evaluateChromosome(chromosome, settings)
    winding = selectWinding(chromosome, dimensions, settings);
    
    %% FEA evaluation
-    [losses, force, volume, mass, Ind, Res]  = evaluateAFPM(dimensions,...
+    [losses, force, volume, mass, Ind, Res]  = evaluateInductorFEMM(dimensions,...
                                      winding, settings);
                
    %% Objective function Evaluation       
@@ -41,4 +41,8 @@ function [evaluatedChrom] = evaluateChromosome(chromosome, settings)
         O_2 = inf; % Mass
 
         O_3 = inf; % Force on I core
+        
+   end
+
+   evaluatedChrom = [O_1, O_2, O_3];
 end

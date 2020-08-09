@@ -120,9 +120,25 @@ Draw_rectangle(x_coord,y_coord, width, height, coilMaterial,coilGroup,'incircuit
 
 %% Airbox
 drawLine(-t_T/2, -w_I/2, 2*(t_T +t_Cu)+t_C+t_T/2, -w_I/2);
+mi_selectsegment(t_T+t_Cu+t_C/2+t_T/2,-w_I/2);
+mi_setsegmentprop('neumann', 0, 1, 0, airGroup)
+mi_clearselected();
+
 drawLine(2*(t_T +t_Cu)+t_C+t_T/2, -w_I/2, 2*(t_T +t_Cu)+t_C+t_T/2, w_I/2+2*w_I+g+w_C);
+mi_selectsegment(2*(t_T +t_Cu)+t_C+t_T/2,w_I+g+w_C/2);
+mi_setsegmentprop('neumann', 0, 1, 0, airGroup)
+mi_clearselected();
+
 drawLine(2*(t_T +t_Cu)+t_C+t_T/2, w_I/2+2*w_I+g+w_C, -t_T/2, w_I/2+2*w_I+g+w_C);
+mi_selectsegment(t_T+t_Cu+t_C/2+t_T/2,w_I/2+2*w_I+g+w_C);
+mi_setsegmentprop('neumann', 0, 1, 0, airGroup)
+mi_clearselected();
+
 drawLine(-t_T/2, w_I/2+2*w_I+g+w_C, -t_T/2, -w_I/2);
+mi_selectsegment(-t_T/2,w_I+g+w_C/2);
+mi_setsegmentprop('neumann', 0, 1, 0, airGroup)
+mi_clearselected();
+
 mi_addblocklabel((2*(t_T +t_Cu)+t_C)/2,w_I+g/2);
 mi_selectlabel((2*(t_T +t_Cu)+t_C)/2,w_I+g/2);
 mi_setblockprop('Air',1,meshSize,'None', 0, airGroup,0);
