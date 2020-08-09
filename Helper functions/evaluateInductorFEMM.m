@@ -25,11 +25,11 @@ depth=dimensions.d;
 
 turns=winding.N_t;
 gauge = winding.gauge;
-I_pk = winding.I_pk;
 
+I_pk = settings.I_pk;
 meshSize = settings.meshSize;
 steps = settings.steps;
-f = 10e3;
+f = settings.frequency;
 lowestHarmonic = 1;
 %% FEMM 
 openfemm(1);
