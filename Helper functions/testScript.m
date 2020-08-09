@@ -13,9 +13,12 @@ dimensions.d = 4e-3;
 
 winding.N_t = 10;
 winding.gauge = 30;
-winding.I_pk = 10;
 
+settings.I_pk = 10;
 settings.meshSize = 0.0005;
 settings.steps = 5;
+settings.frequency = 60;
+settings.L_ref = 1e-3;
+settings.J = 10;
 
 [losses, force, volume, mass, Ind, Res] = evaluateInductorFEMM(dimensions, winding, settings);
