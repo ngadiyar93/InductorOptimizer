@@ -22,8 +22,11 @@ w_E=dimensions.w_E;
 w_C=dimensions.w_C;
 w_I=w_E-w_C;
 depth=dimensions.d;
+
 turns=winding.N_t;
 gauge = winding.gauge;
+I_pk = winding.I_pk;
+
 meshSize = settings.meshSize;
 steps = settings.steps;
 f = 10e3;
@@ -79,25 +82,25 @@ height = w_C;
 % Tooth 1
 x_coord = 0;
 y_coord = w_I+g;
-Draw_rectangle(x_coord,y_coord,width,height,coreMaterial,IcoreGroup,'automesh',0,'meshsize',meshSize);
+Draw_rectangle(x_coord,y_coord,width,height,coreMaterial,EcoreGroup,'automesh',0,'meshsize',meshSize);
 % Tooth 2
 width = t_C;
 height = w_C;
 x_coord = t_T+t_Cu;
 y_coord = w_I+g;
-Draw_rectangle(x_coord,y_coord,width,height,coreMaterial,IcoreGroup,'automesh',0,'meshsize',meshSize);
+Draw_rectangle(x_coord,y_coord,width,height,coreMaterial,EcoreGroup,'automesh',0,'meshsize',meshSize);
 % Tooth 3
 width = t_T;
 height = w_C;
 x_coord = t_T+t_Cu+t_C+t_Cu;
 y_coord = w_I+g;
-Draw_rectangle(x_coord,y_coord,width,height,coreMaterial,IcoreGroup,'automesh',0,'meshsize',meshSize);
+Draw_rectangle(x_coord,y_coord,width,height,coreMaterial,EcoreGroup,'automesh',0,'meshsize',meshSize);
 % Ecore back iron
 width = 2*(t_T + t_Cu)+t_C;
 height = w_I;
 x_coord = 0;
 y_coord = w_I+g+w_C;
-Draw_rectangle(x_coord,y_coord,width,height,coreMaterial,IcoreGroup,'automesh',0,'meshsize',meshSize);
+Draw_rectangle(x_coord,y_coord,width,height,coreMaterial,EcoreGroup,'automesh',0,'meshsize',meshSize);
 
 %% Coils
 %In
@@ -112,14 +115,14 @@ width = t_Cu;
 height = w_C;
 x_coord = t_T+t_Cu+t_C;
 y_coord = w_I+g;
-Draw_rectangle(x_coord,y_coord, width, height, coilMaterial,coilGroup,'incircuit','A','turns',-turns,'automesh',1,'meshsize',meshSize);
+Draw_rectangle(x_coord,y_coord, width, height, coilMaterial,coilGroup,'incircuit','A','turns',turns,'automesh',1,'meshsize',meshSize);
 
 
 %% Airbox
 drawLine(-t_T/2, -w_I/2, 2*(t_T +t_Cu)+t_C+t_T/2, -w_I/2);
 drawLine(2*(t_T +t_Cu)+t_C+t_T/2, -w_I/2, 2*(t_T +t_Cu)+t_C+t_T/2, w_I/2+2*w_I+g+w_C);
 drawLine(2*(t_T +t_Cu)+t_C+t_T/2, w_I/2+2*w_I+g+w_C, -t_T/2, w_I/2+2*w_I+g+w_C);
-drawLine(-t_T/2, w_I/2+2*w_I+g+w_C, -t_T/2, -w_I/2, 2*(t_T +t_Cu)+t_C+t_T/2, -w_I/2);
+drawLine(-t_T/2, w_I/2+2*w_I+g+w_C, -t_T/2, -w_I/2);
 mi_addblocklabel((2*(t_T +t_Cu)+t_C)/2,w_I+g/2);
 mi_selectlabel((2*(t_T +t_Cu)+t_C)/2,w_I+g/2);
 mi_setblockprop('Air',1,meshSize,'None', 0, airGroup,0);
@@ -139,7 +142,7 @@ for i = 1:length(angles)
     
    if alpha_w == 0
        nn = mo_numelements;
-       B = zeros(floor(totalDisplacement/deltaDisplacement),nn);
+       B = zeros(floor(steps),nn);
        centroid = zeros(nn,1);
        a = zeros(nn,1);
        group_num = zeros(nn,1);
@@ -223,18 +226,19 @@ w=lowestHarmonic*Frequency*w.*(w<(ns/2));
 g1=(feaData.groupNum==EcoreGroup);
 B_tesla = nthroot(bsq,2);
 B_gauss = B_tesla*10^4;
-coreLoss=w./(a./B_gauss.^3+b./B_gauss.^2.3+c./B_gauss.^1.65)+d.*B_gauss.^2.*w.^2; %in mW/cm^3
-losses.Ecore = EcoreLoss*1e3*(v.*g1); % Get the E core losses; Convert to W/m^3 and then to Watts.
-
+coreLoss=w'./(a./B_gauss.^3+b./B_gauss.^2.3+c./B_gauss.^1.65)+w'.^2.*d.*B_gauss.^2; %in mW/cm^3
+losses.Ecore = coreLoss*1e3*(v.*g1); % Get the E core losses; Convert to W/m^3 and then to Watts.
+losses.Ecore = sum(losses.Ecore);
 g2=(feaData.groupNum==IcoreGroup);
 losses.Icore = coreLoss*1e3*(v.*g2); % Get the I core losses; Convert to W/m^3 and then to Watts.
-
+losses.Icore = sum(losses.Icore);
 %%%%%%%%%%%%%%%%%%%%%%Compute Mass%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 I_corevolume = w_I*2*(t_T+t_Cu)+t_C*depth;
 E_corevolume = depth*((w_E*2*(t_T+t_Cu)+t_C)-(2*t_Cu*w_C));
 coreVolume = I_corevolume + E_corevolume;
 coreMass = coreVolume*rho_core;
 coilDia = 8.2514694*exp(-0.115943*gauge)*1e-3; % in [m]
+meanLength = 2*(depth+t_C+t_Cu/2);
 copperMass = rho_Cu*turns*meanLength*pi*(coilDia^2)/4;
 mass = coreMass+copperMass;
 
