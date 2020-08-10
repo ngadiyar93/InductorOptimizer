@@ -12,7 +12,7 @@ function [losses, force, volume, mass, Ind, Res] = evaluateInductorFEMM(dimensio
 % volume: Inductor volume
 % mass: Mass of the inductor
 % Ind: Inductance in [H]
-% Res: Resistance in [ohms]
+% Res: Resistance in [ohms], @ what temperature, so this is dc resistance
 
 t_T=dimensions.t_T;
 t_Cu=dimensions.t_Cu;
@@ -52,7 +52,7 @@ coilGroup = 3;
 airGroup = 4;
 
 %% add circuits: mi_addcircprop(circuitname, i, circuittype)
-mi_addcircprop('A', 0, 1)
+mi_addcircprop('A', 0, 1)       % add circuit properties
 %% Boundary Conditions: mi_addboundprop(propname, A0, A1, A2, Phi, Mu, Sig, c0, c1, BdryFormat,ia, oa)
 mi_addboundprop('neumann', 0, 0, 0, 0, 0, 0, 0, 0, 0,0, 0);
 mi_setgrid(1,'cart'); 
@@ -152,7 +152,7 @@ for i = 1:length(angles)
     alpha_w = angles(i);
     I_a = I_pk.*cos(alpha_w*pi/180)+(I_pk/5).*cos(5*alpha_w*pi/180)+(I_pk/7).*cos(7*alpha_w*pi/180)+...
        (I_pk/23).*cos(23*alpha_w*pi/180); % Assume the 23rd harmonic is the sw freq harmonic
-    mi_setcurrent('A',I_a);
+    mi_setcurrent('A',I_a);    % A is the circuit property
     mi_analyze(1);
     mi_loadsolution();
     
@@ -173,12 +173,14 @@ for i = 1:length(angles)
             probinfo=mo_getprobleminfo; %get the problem info
               
    end
+   
        for m = 1:nn
            if (group_num(m)==EcoreGroup || group_num(m)==IcoreGroup)
                p_c  = centroid(m);
                 B(kk,m) = (mo_getb(real(p_c),imag(p_c))*[1;1j]);
            end
        end
+       
 %% Force on I core    
    mo_groupselectblock(IcoreGroup);
    force_array(kk)=mo_blockintegral(18);  
@@ -195,7 +197,7 @@ for i = 1:length(angles)
            L = coilProp(3)/coilProp(1);
            R = coilProp(2)/coilProp(1);
            L_array = [L_array, L];
-           R_array = [R_array, R];
+           R_array = [R_array, R];              % 
       end
    end   
    mo_close;
