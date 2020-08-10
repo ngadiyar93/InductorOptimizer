@@ -76,7 +76,7 @@ height = w_I;
 Draw_rectangle(0,0,width,height,coreMaterial,IcoreGroup,'automesh',0,'meshsize',meshSize);
 
 %% Make E core
-% Teeth 
+% Teeth (pl)
 width = t_T;
 height = w_C;
 % Tooth 1
