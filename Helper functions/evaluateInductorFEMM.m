@@ -204,6 +204,8 @@ closefemm;
 Res = mean(R_array);
 Ind = mean(L_array);
 force = force_array;
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%
 %%%% Post processing %%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%
@@ -223,7 +225,7 @@ v = a*h*lengthunits^2; % This is because element area is in the units used to dr
 % Compute the square of the amplitude of each harmonic at the centroid of
 % each element in the mesh. Matlab's built-in FFT function makes this easy.
 ns=steps;
-bxfft=abs(fft(real(b)))*(2/ns);
+bxfft=abs(fft(real(b)))*(2/ns);    % B  = feaData.B = b = Flux density in the core
 byfft=abs(fft(imag(b)))*(2/ns);
 bsq=(bxfft.*bxfft) + (byfft.*byfft);
 Frequency = f;
@@ -242,7 +244,7 @@ w=lowestHarmonic*Frequency*w.*(w<(ns/2));
 g1=(feaData.groupNum==EcoreGroup);
 B_tesla = nthroot(bsq,2);
 B_gauss = B_tesla*10^4;
-coreLoss=w'./(a./B_gauss.^3+b./B_gauss.^2.3+c./B_gauss.^1.65)+w'.^2.*d.*B_gauss.^2; %in mW/cm^3
+coreLoss=w'./(a./B_gauss.^3+b./B_gauss.^2.3+c./B_gauss.^1.65)+w'.^2.*d.*B_gauss.^2; %in mW/cm^3, This equation is from the microMagnetics excel sheet
 losses.Ecore = coreLoss*1e3*(v.*g1); % Get the E core losses; Convert to W/m^3 and then to Watts.
 losses.Ecore = sum(losses.Ecore);
 g2=(feaData.groupNum==IcoreGroup);
