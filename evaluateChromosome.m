@@ -29,7 +29,7 @@ function [evaluatedChrom] = evaluateChromosome(chromosome, settings)
    %% Objective function Evaluation       
    
    if (abs(Ind - settings.L_ref) < 1e-6) % 1uH tolerance
-        O_1 = losses.Ecore, losses.Icore + settings.I_pk^2*Res; % Total losses
+        O_1 = losses.Ecore + losses.Icore + settings.I_pk^2*Res; % Total losses
         
         O_2 = mass; % Mass
 
