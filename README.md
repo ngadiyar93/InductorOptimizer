@@ -1,5 +1,7 @@
 # Inductor Optimization
-Repository containing files to optimize an inductor
+Repository containing files to optimize an inductor. 
+
+**Note:** The owners of this repository offer no warranties or assume any liability for anything arising out of use of this code. The license can be found [here](https://github.com/ngadiyar93/InductorOptimization/blob/master/LICENSE)
 
 ## Instructions to run the optimization
 
