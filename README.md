@@ -1,5 +1,5 @@
-# Inductor Optimization
-Repository containing files to optimize an inductor. 
+# Inductor Optimizer
+This repository was developed by two graduate students over the COVID-19 lockdown period to automate the design optimization of power inductor.
 
 **Note:** The owners of this repository offer no warranties or assume any liability for anything arising out of use of this code. The license can be found [here](https://github.com/ngadiyar93/InductorOptimization/blob/master/LICENSE)
 
